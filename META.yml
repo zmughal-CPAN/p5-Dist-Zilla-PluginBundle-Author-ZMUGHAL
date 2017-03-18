@@ -1,0 +1,35 @@
+---
+abstract: 'A plugin bundle for distributions built by ZMUGHAL'
+author:
+  - 'Zakariyya Mughal <zmughal@cpan.org>'
+build_requires:
+  perl: '5.006'
+configure_requires:
+  ExtUtils::MakeMaker: '0'
+  perl: '5.006'
+dynamic_config: 0
+generated_by: 'Dist::Zilla version 6.008, CPAN::Meta::Converter version 2.150005'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: Dist-Zilla-PluginBundle-Author-ZMUGHAL
+requires:
+  App::scan_prereqs_cpanfile: '0'
+  Dist::Zilla::Role::PluginBundle::Easy: '0'
+  Dist::Zilla::Role::PluginBundle::PluginRemover: '0.103'
+  Moose: '0'
+  Perl::Critic::Policy::CodeLayout::TabIndentSpaceAlign: '0'
+  Pod::Coverage: '0'
+  Pod::Elemental::Transformer::List: '0'
+  Pod::Weaver::Section::Consumes: '0'
+  Pod::Weaver::Section::Extends: '0'
+  Test::Perl::Critic: '0'
+  perl: '5.006'
+  strict: '0'
+  warnings: '0'
+resources:
+  homepage: https://github.com/zmughal/p5-Dist-Zilla-PluginBundle-Author-ZMUGHAL
+  repository: https://github.com/zmughal/p5-Dist-Zilla-PluginBundle-Author-ZMUGHAL.git
+version: '0.001'
+x_serialization_backend: 'YAML::Tiny version 1.69'
