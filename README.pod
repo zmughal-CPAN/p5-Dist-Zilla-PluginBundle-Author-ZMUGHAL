@@ -8,7 +8,7 @@ Dist::Zilla::PluginBundle::Author::ZMUGHAL - A plugin bundle for distributions b
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 AUTHOR
 
