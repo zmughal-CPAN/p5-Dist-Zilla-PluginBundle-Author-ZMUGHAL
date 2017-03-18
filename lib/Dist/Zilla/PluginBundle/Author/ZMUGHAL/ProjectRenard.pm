@@ -20,8 +20,19 @@ use Pod::Elemental::Transformer::List ();
 sub configure {
 	my $self = shift;
 
+	$self->add_bundle('Filter', {
+		'-bundle' => '@Author::ZMUGHAL::Basic',
+		'-remove' => [ 'PodWeaver' ],
+	});
+
 	# ; run the xt/ tests
 	$self->add_plugins( qw( RunExtraTests) );
+
+	$self->add_plugins([
+		'PodWeaver' => [
+			config_plugin => '@Author::ZMUGHAL::ProjectRenard',
+		],
+	]);
 
 	$self->add_plugins(qw(
 		Test::Perl::Critic
