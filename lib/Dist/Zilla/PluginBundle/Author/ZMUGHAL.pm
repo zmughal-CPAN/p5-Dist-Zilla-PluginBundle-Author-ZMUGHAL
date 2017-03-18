@@ -13,52 +13,7 @@ with qw(
 sub configure {
 	my $self = shift;
 
-	$self->add_bundle('Filter', {
-		'-bundle' => '@Basic',
-		'-remove' => [ 'ExtraTests' ],
-	});
-
-	$self->add_plugins(
-		qw(
-			MetaJSON
-			AutoPrereqs
-			PkgVersion
-			CheckChangeLog
-			GithubMeta
-			PodWeaver
-			MinimumPerl
-		)
-	);
-
-	$self->add_plugins(
-		['ReadmeAnyFromPod' => [
-			#; generate README.pod in root (so that it can be displayed on GitHub)
-			type => 'pod',
-			filename => 'README.pod',
-			location => 'root',
-		]],
-
-		['Git::CommitBuild' => [
-			#; no build commits
-			branch => '',
-			#; release commits
-			release_branch  => 'build/%b',
-			release_message => 'Release build of v%v (on %b)',
-		]],
-	);
-
-	$self->add_bundle(
-		'Git' => {
-			allow_dirty => [
-					'dist.ini',
-					'README'
-				],
-			push_to => [
-					'origin',
-					'origin build/master:build/master'
-				] ,
-		}
-	);
+	$self->add_bundle('Author::ZMUGHAL::Basic');
 }
 
 __PACKAGE__->meta->make_immutable;
