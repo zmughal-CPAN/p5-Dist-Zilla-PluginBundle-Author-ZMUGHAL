@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package Dist::Zilla::PluginBundle::Author::ZMUGHAL;
 # ABSTRACT: A plugin bundle for distributions built by ZMUGHAL
-$Dist::Zilla::PluginBundle::Author::ZMUGHAL::VERSION = '0.001';
+$Dist::Zilla::PluginBundle::Author::ZMUGHAL::VERSION = '0.002';
 use Moose;
 with qw(
 	Dist::Zilla::Role::PluginBundle::Easy
@@ -31,7 +31,7 @@ Dist::Zilla::PluginBundle::Author::ZMUGHAL - A plugin bundle for distributions b
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 AUTHOR
 

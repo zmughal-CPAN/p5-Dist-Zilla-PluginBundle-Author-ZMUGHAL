@@ -1,6 +1,6 @@
 package Dist::Zilla::PluginBundle::Author::ZMUGHAL::ProjectRenard;
 # ABSTRACT: A plugin bundle for Project Renard
-$Dist::Zilla::PluginBundle::Author::ZMUGHAL::ProjectRenard::VERSION = '0.001';
+$Dist::Zilla::PluginBundle::Author::ZMUGHAL::ProjectRenard::VERSION = '0.002';
 use Moose;
 with qw(
 	Dist::Zilla::Role::PluginBundle::Easy
@@ -20,8 +20,19 @@ use Pod::Elemental::Transformer::List ();
 sub configure {
 	my $self = shift;
 
+	$self->add_bundle('Filter', {
+		'-bundle' => '@Author::ZMUGHAL::Basic',
+		'-remove' => [ 'PodWeaver' ],
+	});
+
 	# ; run the xt/ tests
 	$self->add_plugins( qw( RunExtraTests) );
+
+	$self->add_plugins([
+		'PodWeaver' => [
+			config_plugin => '@Author::ZMUGHAL::ProjectRenard',
+		],
+	]);
 
 	$self->add_plugins(qw(
 		Test::Perl::Critic
@@ -45,7 +56,7 @@ Dist::Zilla::PluginBundle::Author::ZMUGHAL::ProjectRenard - A plugin bundle for 
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 AUTHOR
 

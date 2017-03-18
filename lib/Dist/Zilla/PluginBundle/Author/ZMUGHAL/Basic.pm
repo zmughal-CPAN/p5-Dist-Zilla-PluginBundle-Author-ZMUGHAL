@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package Dist::Zilla::PluginBundle::Author::ZMUGHAL::Basic;
 # ABSTRACT: A plugin bundle that sets up a basic set of plugins for ZMUGHAL
-$Dist::Zilla::PluginBundle::Author::ZMUGHAL::Basic::VERSION = '0.001';
+$Dist::Zilla::PluginBundle::Author::ZMUGHAL::Basic::VERSION = '0.002';
 use Moose;
 with qw(
 	Dist::Zilla::Role::PluginBundle::Easy
@@ -76,7 +76,7 @@ Dist::Zilla::PluginBundle::Author::ZMUGHAL::Basic - A plugin bundle that sets up
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 AUTHOR
 

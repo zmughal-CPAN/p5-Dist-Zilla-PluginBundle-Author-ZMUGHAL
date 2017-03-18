@@ -29,6 +29,7 @@
             "Perl::Critic::Policy::CodeLayout::TabIndentSpaceAlign" : "0",
             "Pod::Coverage" : "0",
             "Pod::Elemental::Transformer::List" : "0",
+            "Pod::Weaver::Config::Assembler" : "0",
             "Pod::Weaver::Section::Consumes" : "0",
             "Pod::Weaver::Section::Extends" : "0",
             "Test::Perl::Critic" : "0",
@@ -52,7 +53,7 @@
          "web" : "https://github.com/zmughal/p5-Dist-Zilla-PluginBundle-Author-ZMUGHAL"
       }
    },
-   "version" : "0.001",
+   "version" : "0.002",
    "x_serialization_backend" : "Cpanel::JSON::XS version 3.0211"
 }
 

@@ -24,13 +24,14 @@ my %WriteMakefileArgs = (
     "Perl::Critic::Policy::CodeLayout::TabIndentSpaceAlign" => 0,
     "Pod::Coverage" => 0,
     "Pod::Elemental::Transformer::List" => 0,
+    "Pod::Weaver::Config::Assembler" => 0,
     "Pod::Weaver::Section::Consumes" => 0,
     "Pod::Weaver::Section::Extends" => 0,
     "Test::Perl::Critic" => 0,
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.001",
+  "VERSION" => "0.002",
   "test" => {
     "TESTS" => ""
   }
@@ -45,6 +46,7 @@ my %FallbackPrereqs = (
   "Perl::Critic::Policy::CodeLayout::TabIndentSpaceAlign" => 0,
   "Pod::Coverage" => 0,
   "Pod::Elemental::Transformer::List" => 0,
+  "Pod::Weaver::Config::Assembler" => 0,
   "Pod::Weaver::Section::Consumes" => 0,
   "Pod::Weaver::Section::Extends" => 0,
   "Test::Perl::Critic" => 0,
