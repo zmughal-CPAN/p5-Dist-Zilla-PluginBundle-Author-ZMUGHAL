@@ -2,8 +2,20 @@ use strict;
 use warnings;
 package Dist::Zilla::PluginBundle::Author::ZMUGHAL::Basic;
 # ABSTRACT: A plugin bundle that sets up a basic set of plugins for ZMUGHAL
-$Dist::Zilla::PluginBundle::Author::ZMUGHAL::Basic::VERSION = '0.003';
+$Dist::Zilla::PluginBundle::Author::ZMUGHAL::Basic::VERSION = '0.004';
 use Moose;
+
+use Dist::Zilla::Plugin::MetaJSON ();
+use Dist::Zilla::Plugin::AutoPrereqs ();
+use Dist::Zilla::Plugin::PkgVersion ();
+use Dist::Zilla::Plugin::CheckChangeLog ();
+use Dist::Zilla::Plugin::GithubMeta ();
+use Dist::Zilla::Plugin::PodWeaver ();
+use Dist::Zilla::Plugin::MinimumPerl ();
+use Dist::Zilla::Plugin::ReadmeAnyFromPod ();
+use Dist::Zilla::Plugin::Git::CommitBuild ();
+use Dist::Zilla::Plugin::Git ();
+
 with qw(
 	Dist::Zilla::Role::PluginBundle::Easy
 	Dist::Zilla::Role::PluginBundle::Config::Slicer ),
@@ -76,7 +88,7 @@ Dist::Zilla::PluginBundle::Author::ZMUGHAL::Basic - A plugin bundle that sets up
 
 =head1 VERSION
 
-version 0.003
+version 0.004
 
 =head1 AUTHOR
 

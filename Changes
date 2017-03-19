@@ -1,3 +1,6 @@
+0.004 2017-03-19 00:06:25-0500
+  - List all the PluginBundle's dependencies.
+
 0.003 2017-03-18 20:57:20-0500
   - Make sure all the PluginBundle roles are listed as dependencies.
 

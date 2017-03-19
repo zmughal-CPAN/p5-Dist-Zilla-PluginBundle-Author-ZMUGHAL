@@ -1,6 +1,6 @@
 package Dist::Zilla::PluginBundle::Author::ZMUGHAL::ProjectRenard;
 # ABSTRACT: A plugin bundle for Project Renard
-$Dist::Zilla::PluginBundle::Author::ZMUGHAL::ProjectRenard::VERSION = '0.003';
+$Dist::Zilla::PluginBundle::Author::ZMUGHAL::ProjectRenard::VERSION = '0.004';
 use Moose;
 with qw(
 	Dist::Zilla::Role::PluginBundle::Easy
@@ -12,10 +12,19 @@ with qw(
 use Test::Perl::Critic ();
 use Perl::Critic::Policy::CodeLayout::TabIndentSpaceAlign ();
 use App::scan_prereqs_cpanfile ();
+use Test::Pod::Coverage ();
 use Pod::Coverage ();
+use Pod::Coverage::TrustPod ();
 use Pod::Weaver::Section::Extends ();
 use Pod::Weaver::Section::Consumes ();
 use Pod::Elemental::Transformer::List ();
+
+use Dist::Zilla::Plugin::RunExtraTests ();
+use Dist::Zilla::Plugin::PodWeaver ();
+
+use Dist::Zilla::Plugin::Test::Perl::Critic ();
+use Dist::Zilla::Plugin::Test::PodSpelling ();
+use Dist::Zilla::Plugin::PodCoverageTests ();
 
 sub configure {
 	my $self = shift;
@@ -56,7 +65,7 @@ Dist::Zilla::PluginBundle::Author::ZMUGHAL::ProjectRenard - A plugin bundle for 
 
 =head1 VERSION
 
-version 0.003
+version 0.004
 
 =head1 AUTHOR
 
