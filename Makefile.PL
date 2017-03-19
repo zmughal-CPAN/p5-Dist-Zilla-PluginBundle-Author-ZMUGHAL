@@ -18,6 +18,7 @@ my %WriteMakefileArgs = (
   "NAME" => "Dist::Zilla::PluginBundle::Author::ZMUGHAL",
   "PREREQ_PM" => {
     "App::scan_prereqs_cpanfile" => 0,
+    "Dist::Zilla::Role::PluginBundle::Config::Slicer" => 0,
     "Dist::Zilla::Role::PluginBundle::Easy" => 0,
     "Dist::Zilla::Role::PluginBundle::PluginRemover" => "0.103",
     "Moose" => 0,
@@ -31,7 +32,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.002",
+  "VERSION" => "0.003",
   "test" => {
     "TESTS" => ""
   }
@@ -40,6 +41,7 @@ my %WriteMakefileArgs = (
 
 my %FallbackPrereqs = (
   "App::scan_prereqs_cpanfile" => 0,
+  "Dist::Zilla::Role::PluginBundle::Config::Slicer" => 0,
   "Dist::Zilla::Role::PluginBundle::Easy" => 0,
   "Dist::Zilla::Role::PluginBundle::PluginRemover" => "0.103",
   "Moose" => 0,

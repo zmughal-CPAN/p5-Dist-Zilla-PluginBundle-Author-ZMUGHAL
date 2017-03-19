@@ -1,6 +1,6 @@
 package Dist::Zilla::PluginBundle::Author::ZMUGHAL::ProjectRenard;
 # ABSTRACT: A plugin bundle for Project Renard
-$Dist::Zilla::PluginBundle::Author::ZMUGHAL::ProjectRenard::VERSION = '0.002';
+$Dist::Zilla::PluginBundle::Author::ZMUGHAL::ProjectRenard::VERSION = '0.003';
 use Moose;
 with qw(
 	Dist::Zilla::Role::PluginBundle::Easy
@@ -56,7 +56,7 @@ Dist::Zilla::PluginBundle::Author::ZMUGHAL::ProjectRenard - A plugin bundle for 
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
 =head1 AUTHOR
 

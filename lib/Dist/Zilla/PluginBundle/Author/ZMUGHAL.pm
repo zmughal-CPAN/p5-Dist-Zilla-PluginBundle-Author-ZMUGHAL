@@ -2,8 +2,14 @@ use strict;
 use warnings;
 package Dist::Zilla::PluginBundle::Author::ZMUGHAL;
 # ABSTRACT: A plugin bundle for distributions built by ZMUGHAL
-$Dist::Zilla::PluginBundle::Author::ZMUGHAL::VERSION = '0.002';
+$Dist::Zilla::PluginBundle::Author::ZMUGHAL::VERSION = '0.003';
 use Moose;
+
+# Dependencies
+use Dist::Zilla::Role::PluginBundle::Easy ();
+use Dist::Zilla::Role::PluginBundle::Config::Slicer ();
+use Dist::Zilla::Role::PluginBundle::PluginRemover ();
+
 with qw(
 	Dist::Zilla::Role::PluginBundle::Easy
 	Dist::Zilla::Role::PluginBundle::Config::Slicer ),
@@ -31,7 +37,7 @@ Dist::Zilla::PluginBundle::Author::ZMUGHAL - A plugin bundle for distributions b
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
 =head1 AUTHOR
 

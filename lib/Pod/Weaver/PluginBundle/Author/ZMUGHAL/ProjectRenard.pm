@@ -1,6 +1,8 @@
+use strict;
+use warnings;
 package Pod::Weaver::PluginBundle::Author::ZMUGHAL::ProjectRenard;
 # ABSTRACT: A plugin bundle for pod woven for Project Renard
-$Pod::Weaver::PluginBundle::Author::ZMUGHAL::ProjectRenard::VERSION = '0.002';
+$Pod::Weaver::PluginBundle::Author::ZMUGHAL::ProjectRenard::VERSION = '0.003';
 use Pod::Weaver::Config::Assembler;
 
 our $PB_NAME = '@Author::ZMUGHAL::ProjectRenard';
@@ -137,7 +139,7 @@ Pod::Weaver::PluginBundle::Author::ZMUGHAL::ProjectRenard - A plugin bundle for 
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
 =head1 AUTHOR
 
