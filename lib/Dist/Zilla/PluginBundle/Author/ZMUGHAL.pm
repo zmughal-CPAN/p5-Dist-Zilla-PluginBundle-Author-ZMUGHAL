@@ -4,6 +4,12 @@ package Dist::Zilla::PluginBundle::Author::ZMUGHAL;
 # ABSTRACT: A plugin bundle for distributions built by ZMUGHAL
 
 use Moose;
+
+# Dependencies
+use Dist::Zilla::Role::PluginBundle::Easy ();
+use Dist::Zilla::Role::PluginBundle::Config::Slicer ();
+use Dist::Zilla::Role::PluginBundle::PluginRemover ();
+
 with qw(
 	Dist::Zilla::Role::PluginBundle::Easy
 	Dist::Zilla::Role::PluginBundle::Config::Slicer ),
