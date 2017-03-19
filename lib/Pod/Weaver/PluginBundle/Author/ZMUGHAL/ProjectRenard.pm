@@ -1,3 +1,5 @@
+use strict;
+use warnings;
 package Pod::Weaver::PluginBundle::Author::ZMUGHAL::ProjectRenard;
 # ABSTRACT: A plugin bundle for pod woven for Project Renard
 
