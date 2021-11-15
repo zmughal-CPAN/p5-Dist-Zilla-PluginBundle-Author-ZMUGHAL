@@ -6,6 +6,7 @@ package Dist::Zilla::PluginBundle::Author::ZMUGHAL::Basic;
 use Moose;
 
 use Dist::Zilla::Plugin::MetaJSON ();
+use Dist::Zilla::Plugin::MetaNoIndex ();
 use Dist::Zilla::Plugin::AutoPrereqs ();
 use Dist::Zilla::Plugin::PkgVersion ();
 use Dist::Zilla::Plugin::CheckChangeLog ();
@@ -40,6 +41,12 @@ sub configure {
 			PodWeaver
 			MinimumPerl
 		)
+	);
+
+	$self->add_plugins(
+		['MetaNoIndex' => {
+			directory => [ qw(t xt inc share eg examples) ],
+		}],
 	);
 
 	$self->add_plugins(
