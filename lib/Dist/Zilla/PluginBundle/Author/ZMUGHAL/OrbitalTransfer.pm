@@ -13,7 +13,6 @@ sub configure {
 
 	$self->add_bundle('Filter', {
 		'-bundle' => '@Author::ZMUGHAL::Basic',
-		'-remove' => [ 'PodWeaver' ],
 	});
 
 	# ; run the xt/ tests
