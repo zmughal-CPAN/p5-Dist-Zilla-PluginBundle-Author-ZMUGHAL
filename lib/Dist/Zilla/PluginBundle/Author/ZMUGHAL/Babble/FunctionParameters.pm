@@ -40,6 +40,12 @@ sub extend_grammar {
         (?> (?&PerlOWS) )
         (?> :? )
         (?> \$ (?&PerlIdentifier) )
+        (?>
+          (?&PerlOWS)
+          =
+          (?&PerlOWS)
+          (?&PerlScalarExpression)
+        )?
       )
     |
     (?:
