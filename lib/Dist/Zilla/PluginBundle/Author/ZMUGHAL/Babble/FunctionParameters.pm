@@ -111,7 +111,8 @@ sub _fp_arg_code_deparse {
 sub _deparse_fp {
   require B::Deparse;
   require Eval::Closure;
-  my $deparse = B::Deparse->new();
+  # https://github.com/mauke/Function-Parameters/issues/29
+  my $deparse = B::Deparse->new("-d");
   my ($self, $kw_text, $sig_text) = @_;
   my $code = qq{
     use @{[ $self->setup_package ]};
