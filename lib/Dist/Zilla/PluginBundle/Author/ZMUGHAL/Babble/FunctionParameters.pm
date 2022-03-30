@@ -44,7 +44,7 @@ sub extend_grammar {
           (?&PerlOWS)
           =
           (?&PerlOWS)
-          (?&PerlScalarExpression)
+          (?&PerlScalarExpression)?
         )?
       )
     |
