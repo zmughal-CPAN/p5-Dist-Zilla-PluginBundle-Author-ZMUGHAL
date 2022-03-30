@@ -62,7 +62,7 @@ sub extend_grammar {
      (?> (?&PerlOWS) )
    \)
   });
-  $g->add_rule(MethodDeclaration => qq{
+  $g->add_rule(FPDeclaration => qq{
     @{[ $self->_fp_keywords_re ]}
     (?&PerlOWS)
     (?: (?&PerlIdentifier)(?&PerlOWS) )?+
@@ -70,14 +70,14 @@ sub extend_grammar {
     (?&PerlOWS)
     (?&PerlBlock)
   });
-  $g->augment_rule(SubroutineDeclaration => '(?&PerlMethodDeclaration)');
-  $g->augment_rule(AnonymousSubroutine => '(?&PerlMethodDeclaration)');
+  $g->augment_rule(SubroutineDeclaration => '(?&PerlFPDeclaration)');
+  $g->augment_rule(AnonymousSubroutine => '(?&PerlFPDeclaration)');
 }
 
 sub transform_to_plain {
   my ($self, $top) = @_;
   $top->remove_use_statement('Function::Parameters');
-  $top->each_match_within(MethodDeclaration => [
+  $top->each_match_within(FPDeclaration => [
       [ kw => $self->_fp_keywords_re ],
       [ name => '(?&PerlOWS) (?:(?&PerlIdentifier)(?&PerlOWS))?+' ],
       [ sig => '(?&PerlBabbleFPParamList)' ],
