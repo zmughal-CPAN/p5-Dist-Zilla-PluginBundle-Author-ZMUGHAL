@@ -27,48 +27,56 @@ lazy _fp_keywords_re => sub {
     . ')';
 };
 
+my $FPTypeRE = q{
+  (?:
+    [^$@%]+ | \( (?&PerlScalarExpression) \)
+  )
+};
+my $FPParamRE = q{
+    (?:
+      (?> (?&PerlBabbleFPType)? )       # TYPE
+      (?> (?&PerlOWS) )
+      (?> :? )                          # NAMED
+      (?> \$ (?&PerlIdentifier) )       # VAR
+      (?>
+        (?&PerlOWS)
+        (?: = )                         # HASDEFAULT
+        (?&PerlOWS)
+        (?: (?&PerlScalarExpression)? ) # DEFAULT
+      )?
+    )
+  |
+  (?:
+    (?: (?> [$@%] ) (?> (?&PerlIdentifier)? ) ) # VAR
+  )
+};
+
+my $FPParamListPartial = q{
+  (?&PerlBabbleFPParam)
+  (?: (?&PerlOWS) [,] (?&PerlOWS) (?&PerlBabbleFPParam))*?
+};
+
+my $FPParamListComplete = qq{
+ \\(
+   (?> (?&PerlOWS) )
+   (?:
+     (?:
+       $FPParamListPartial
+       [:]
+     )?
+     (?:
+       $FPParamListPartial
+     )
+   )??
+   (?> (?&PerlOWS) )
+ \\)
+};
+
 sub extend_grammar {
   my ($self, $g) = @_;
-  $g->add_rule(BabbleFPType => q{
-    (?:
-      [^$@%]+ | \( (?&PerlScalarExpression) \)
-    )
-  });
-  $g->add_rule(BabbleFPParam => q{
-      (?:
-        (?> (?&PerlBabbleFPType)? )       # TYPE
-        (?> (?&PerlOWS) )
-        (?> :? )                          # NAMED
-        (?> \$ (?&PerlIdentifier) )       # VAR
-        (?>
-          (?&PerlOWS)
-          (?: = )                         # HASDEFAULT
-          (?&PerlOWS)
-          (?: (?&PerlScalarExpression)? ) # DEFAULT
-        )?
-      )
-    |
-    (?:
-      (?: (?> [$@%] ) (?> (?&PerlIdentifier)? ) ) # VAR
-    )
-  });
-  $g->add_rule(BabbleFPParamList => q{
-   \(
-     (?> (?&PerlOWS) )
-     (?:
-       (?:
-         (?&PerlBabbleFPParam)
-         (?: (?&PerlOWS) [,] (?&PerlOWS) (?&PerlBabbleFPParam))*?
-         [:]
-       )?
-       (?:
-         (?&PerlBabbleFPParam)
-         (?: (?&PerlOWS) [,] (?&PerlOWS) (?&PerlBabbleFPParam))*?
-       )
-     )??
-     (?> (?&PerlOWS) )
-   \)
-  });
+  $g->add_rule(BabbleFPType => $FPTypeRE );
+  $g->add_rule(BabbleFPParam => $FPParamRE );
+  $g->add_rule(BabbleFPParamList => $FPParamListComplete );
   $g->add_rule(FPDeclaration => qq{
     @{[ $self->_fp_keywords_re ]}
     (?&PerlOWS)
