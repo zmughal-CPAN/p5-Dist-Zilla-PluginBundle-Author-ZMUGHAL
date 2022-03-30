@@ -36,20 +36,20 @@ sub extend_grammar {
   });
   $g->add_rule(BabbleFPParam => q{
       (?:
-        (?> (?&PerlBabbleFPType)? )
+        (?> (?&PerlBabbleFPType)? )       # TYPE
         (?> (?&PerlOWS) )
-        (?> :? )
-        (?> \$ (?&PerlIdentifier) )
+        (?> :? )                          # NAMED
+        (?> \$ (?&PerlIdentifier) )       # VAR
         (?>
           (?&PerlOWS)
-          =
+          (?: = )                         # HASDEFAULT
           (?&PerlOWS)
-          (?&PerlScalarExpression)?
+          (?: (?&PerlScalarExpression)? ) # DEFAULT
         )?
       )
     |
     (?:
-      (?> [$@%] ) (?> (?&PerlIdentifier)? )
+      (?: (?> [$@%] ) (?> (?&PerlIdentifier)? ) ) # VAR
     )
   });
   $g->add_rule(BabbleFPParamList => q{
