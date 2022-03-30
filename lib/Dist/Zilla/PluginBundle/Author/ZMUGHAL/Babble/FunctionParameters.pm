@@ -56,8 +56,15 @@ sub extend_grammar {
    \(
      (?> (?&PerlOWS) )
      (?:
-       (?:(?&PerlBabbleFPParam)(?&PerlOWS)[,:](?&PerlOWS))*?
-       (?&PerlBabbleFPParam)
+       (?:
+         (?&PerlBabbleFPParam)
+         (?: (?&PerlOWS) [,] (?&PerlOWS) (?&PerlBabbleFPParam))*?
+         [:]
+       )?
+       (?:
+         (?&PerlBabbleFPParam)
+         (?: (?&PerlOWS) [,] (?&PerlOWS) (?&PerlBabbleFPParam))*?
+       )
      )??
      (?> (?&PerlOWS) )
    \)
