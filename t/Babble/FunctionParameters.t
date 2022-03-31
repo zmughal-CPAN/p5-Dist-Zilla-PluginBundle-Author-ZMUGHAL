@@ -20,10 +20,10 @@ my @cand = (
       plain =>  q|sub foo { my $self = shift; my ($bar, $baz) = @_; 42; }|,
     },
   ],
-  [ 'around foo($bar, $baz) { 42; }', {
-      plain =>  q|sub foo { my $orig = shift; my $self = shift; my ($bar, $baz) = @_; 42; }|,
-    },
-  ],
+  #[ 'around foo($bar, $baz) { 42; }', {
+  #    plain =>  q|sub foo { my $orig = shift; my $self = shift; my ($bar, $baz) = @_; 42; }|,
+  #  },
+  #],
   [ 'classmethod foo($bar) { 42; }', {
       plain =>  q|sub foo { my $class = shift; my ($bar) = @_; 42; }|,
     },
@@ -94,8 +94,6 @@ foreach my $cand (@cand) {
     };
 
     subtest "Plain via Deparse" => sub {
-      plan skip_all => 'deparse does not currently support runtime'
-        if $from =~ /\A around/x;
       my $top = $g->match('Document' => $from);
       $fp->transform_to_plain_via_deparse($top);
       my $plain_to_deparse = $to->{plain};

@@ -200,6 +200,11 @@ sub _transform_to_plain_cb {
 
     my ($kw, $sig, $rest) = @{$m->submatches}{qw(kw sig rest)};
     my $kw_info = $self->_import_info->{fp}{$kw_text};
+
+    if( $kw_info->{instl} ) {
+      die "Keyword '$kw_text' currently unsupported due to install_sub";
+    }
+
     $kw->replace_text('sub');
 
     my $front = $self->$cb($kw_text, $invocants, $params);
