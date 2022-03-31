@@ -218,12 +218,12 @@ sub transform_to_plain {
     if( $front_generate ne $front_deparse ) {
       warn <<EOF
 Front not the same:
+ - Gen: $front_generate
+ - Dep: $front_deparse
 
-Gen: $front_generate
-Dep: $front_deparse
 EOF
     }
-      return $front_generate;
+    return $front_deparse;
   });
 }
 
