@@ -29,7 +29,7 @@ lazy _fp_keywords_re => sub {
 
 my $FPTypeRE = q{
   (?:
-    [^$@%]+ | \( (?&PerlScalarExpression) \)
+    [^$@%:]+ | \( (?&PerlScalarExpression) \)
   )
 };
 my $FPParamRE = q{
@@ -189,7 +189,11 @@ sub transform_to_plain_via_deparse {
     }
     if( @$params ) {
       $sig_text .= join ", ", map {
-        join " ", grep defined, @$_{qw(named var hasdefault default)}
+        my $param_reconstitute = join " ", grep defined, @$_{qw(var hasdefault default)};
+        if( exists $_->{named} && $_->{named} eq ":" ) {
+          $param_reconstitute = ":" . $param_reconstitute;
+        }
+        $param_reconstitute
       } @$params;
     }
 
