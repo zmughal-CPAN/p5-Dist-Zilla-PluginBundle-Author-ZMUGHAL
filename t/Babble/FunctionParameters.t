@@ -88,10 +88,13 @@ foreach my $cand (@cand) {
 
   subtest "Candidate: $from" => sub {
     subtest "Plain" => sub {
-      plan skip_all => 'Not all generated code is correct yet';
+      TODO: {
+      local $TODO = 'Generated transform not implemented yet'
+        if $to->{plain} =~ /\Q...\E/;
       my $top = $g->match('Document' => $from);
-      $fp->transform_to_plain($top);
+      $fp->transform_to_plain_via_generate($top);
       is($top->text, $to->{plain}, "plain");
+      }
     };
 
     subtest "Plain via Deparse" => sub {
