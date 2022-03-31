@@ -164,7 +164,7 @@ sub transform_to_plain {
     }
     my $front = join "; ", @front_statements;
     $front .= ";";
-    $rest->transform_text(sub { s/^(\s*)\{/${1}{ ${front}/ });
+    $self->_transform_place_front_in_block($rest, $front);
     $sig->replace_text('');
   });
 }
@@ -197,7 +197,7 @@ sub transform_to_plain_via_deparse {
 
     my $front = $self->_fp_arg_code_deparse($kw_text, $sig_text);
 
-    $rest->transform_text(sub { s/^(\s*)\{/${1}{ ${front}/ });
+    $self->_transform_place_front_in_block($rest, $front);
     $sig->replace_text('');
   });
 }
@@ -248,6 +248,11 @@ sub _deparse_fp {
     source => $code,
   );
   my $text = $deparse->coderef2text( $coderef );
+}
+
+sub _transform_place_front_in_block {
+  my ($self, $rest, $front) = @_;
+  $rest->transform_text(sub { s/^(\s*)\{/${1}{ ${front}/ });
 }
 
 1;
