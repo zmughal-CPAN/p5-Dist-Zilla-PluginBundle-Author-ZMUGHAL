@@ -29,7 +29,7 @@ lazy _fp_keywords_re => sub {
 
 my $FPTypeRE = q{
   (?:
-    [^$@%:]+ | \( (?&PerlScalarExpression) \)
+    [^$@%:(]+ | \( (?&PerlScalarExpression) \)
   )
 };
 my $FPParamRE = q{
