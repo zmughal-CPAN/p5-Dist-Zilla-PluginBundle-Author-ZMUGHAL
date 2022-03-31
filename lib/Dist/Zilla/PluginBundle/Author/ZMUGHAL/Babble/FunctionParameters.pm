@@ -135,49 +135,38 @@ sub _do_transform {
 
 }
 
-sub transform_to_plain {
-  my ($self, $top) = @_;
-  $self->_do_transform($top, sub {
-    my ($m, $kw_text, $invocants, $params) = @_;
+sub _transform_to_plain_via_generate_front {
+    my ($self, $kw_text, $invocants, $params) = @_;
 
-    my ($kw, $sig, $rest) = @{$m->submatches}{qw(kw sig rest)};
     my $kw_info = $self->_import_info->{fp}{$kw_text};
-    $kw->replace_text('sub');
 
     my @invocant_vars;
-    my @params_vars;
     if( ! @$invocants && $kw_info->{shift} ) {
       push @invocant_vars, split ' ', $kw_info->{shift};
     } elsif( @$invocants ) {
       push @invocant_vars, map { $_->{var} } @$invocants;
     }
-    push @params_vars, map { $_->{var} } @$params;
 
     my @front_statements;
     if( @invocant_vars ) {
       my $shift_perl = join "; ", map { "my $_ = shift" } @invocant_vars;
       push @front_statements, $shift_perl;
     }
-    if( @params_vars ) {
+    if( @$params ) {
+      my @params_vars;
+      push @params_vars, map { $_->{var} } @$params;
+
       my $params_perl = join ", ", @params_vars;
       push @front_statements, "my ($params_perl) = \@_";
     }
     my $front = join "; ", @front_statements;
     $front .= ";";
-    $self->_transform_place_front_in_block($rest, $front);
-    $sig->replace_text('');
-  });
+
+    return $front;
 }
 
-sub transform_to_plain_via_deparse {
-  my ($self, $top) = @_;
-  $self->_do_transform($top, sub {
-    my ($m, $kw_text, $invocants, $params) = @_;
-
-    my ($kw, $sig, $rest) = @{$m->submatches}{qw(kw sig rest)};
-    my $kw_info = $self->_import_info->{fp}{$kw_text};
-    $kw->replace_text('sub');
-
+sub _transform_to_plain_via_deparse_front {
+    my ($self, $kw_text, $invocants, $params) = @_;
     my $sig_text = '';
     $sig_text .= '(';
 
@@ -201,9 +190,50 @@ sub transform_to_plain_via_deparse {
 
     my $front = $self->_fp_arg_code_deparse($kw_text, $sig_text);
 
+    return $front;
+}
+
+sub _transform_to_plain_cb {
+  my ($self, $top, $cb) = @_;
+  $self->_do_transform($top, sub {
+    my ($m, $kw_text, $invocants, $params) = @_;
+
+    my ($kw, $sig, $rest) = @{$m->submatches}{qw(kw sig rest)};
+    my $kw_info = $self->_import_info->{fp}{$kw_text};
+    $kw->replace_text('sub');
+
+    my $front = $self->$cb($kw_text, $invocants, $params);
+
     $self->_transform_place_front_in_block($rest, $front);
     $sig->replace_text('');
   });
+}
+
+sub transform_to_plain {
+  my ($self, $top) = @_;
+  $self->_transform_to_plain_cb( $top, sub {
+    my $front_generate = _transform_to_plain_via_generate_front(@_);
+    my $front_deparse  = _transform_to_plain_via_deparse_front(@_);
+    if( $front_generate ne $front_deparse ) {
+      warn <<EOF
+Front not the same:
+
+Gen: $front_generate
+Dep: $front_deparse
+EOF
+    }
+      return $front_generate;
+  });
+}
+
+sub transform_to_plain_via_generate {
+  my ($self, $top) = @_;
+  $self->_transform_to_plain_cb( $top, \&_transform_to_plain_via_generate_front );
+}
+
+sub transform_to_plain_via_deparse {
+  my ($self, $top) = @_;
+  $self->_transform_to_plain_cb( $top, \&_transform_to_plain_via_deparse_front );
 }
 
 sub _parse_param_list {
