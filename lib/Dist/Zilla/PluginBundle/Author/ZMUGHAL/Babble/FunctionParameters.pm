@@ -201,10 +201,6 @@ sub _transform_to_plain_cb {
     my ($kw, $sig, $rest) = @{$m->submatches}{qw(kw sig rest)};
     my $kw_info = $self->_import_info->{fp}{$kw_text};
 
-    if( $kw_info->{instl} ) {
-      die "Keyword '$kw_text' currently unsupported due to install_sub";
-    }
-
     $kw->replace_text('sub');
 
     my $front = $self->$cb($kw_text, $invocants, $params);
@@ -264,8 +260,14 @@ sub _parse_param_list {
 
 sub _fp_arg_code_deparse {
   my ($self, $kw_text, $sig_text) = @_;
+  my $kw_info = $self->_import_info->{fp}{$kw_text};
   my $text = $self->_deparse_fp( $kw_text, $sig_text );
   (my $replaced = $text) =~ s/\Qpackage Eval::Closure::Sandbox_\E.*?^\s*}$//ms;
+  $replaced =~ s/^\s*\QFunction::Parameters::_croak\E.*;$//mg;
+  if( $kw_info->{instl} ) {
+    $replaced =~ s/^\s*\Q@{[ $kw_info->{instl} ]}\E\(.*\{$//mg;
+    $replaced =~ s/^(\s*42;)\n\s*\}\n\s*\);$/$1/mg;
+  }
   $replaced =~ s/\A[^{]*?\{\s*|42;\n\}\Z//msg;
   $replaced =~ s/^\s*|\s*$//msg;
   $replaced =~ s/\n+/ /msg;
@@ -279,10 +281,21 @@ sub _deparse_fp {
   # https://github.com/mauke/Function-Parameters/issues/29
   my $deparse = B::Deparse->new("-d");
   my ($self, $kw_text, $sig_text) = @_;
+  my $kw_info = $self->_import_info->{fp}{$kw_text};
   my $code = qq{
     use @{[ $self->setup_package ]};
-    $kw_text $sig_text { 42 };
   };
+  if( $kw_info->{instl} ) {
+    $code .= qq{
+      sub {
+        $kw_text foo $sig_text { 42 }
+      }
+    };
+  } else {
+    $code .= qq{
+      $kw_text $sig_text { 42 };
+    };
+  }
   my $coderef = Eval::Closure::eval_closure(
     source => $code,
   );

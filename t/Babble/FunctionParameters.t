@@ -20,10 +20,11 @@ my @cand = (
       plain =>  q|sub foo { my $self = shift; my ($bar, $baz) = @_; 42; }|,
     },
   ],
-  #[ 'around foo($bar, $baz) { 42; }', {
-  #    plain =>  q|sub foo { my $orig = shift; my $self = shift; my ($bar, $baz) = @_; 42; }|,
-  #  },
-  #],
+  [ 'around foo($bar, $baz) { 42; }', {
+      plain =>  q|sub foo { my $orig = shift; my $self = shift; my ($bar, $baz) = @_; 42; }|,
+      fp_deparse =>  q|sub foo { my($orig, $self) = splice(@_, 0, 2); my($bar, $baz) = @_; 42; }|,
+    },
+  ],
   [ 'classmethod foo($bar) { 42; }', {
       plain =>  q|sub foo { my $class = shift; my ($bar) = @_; 42; }|,
     },
