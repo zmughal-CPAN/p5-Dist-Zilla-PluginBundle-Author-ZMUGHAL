@@ -34,20 +34,32 @@ my $FPTypeRE = q{
 };
 my $FPParamRE = q{
     (?:
-      (?> (?&PerlBabbleFPType)? )       # TYPE
+      #(?<type>
+        (?> (?&PerlBabbleFPType)? )
+      #)
       (?> (?&PerlOWS) )
-      (?> :? )                          # NAMED
-      (?> \$ (?&PerlIdentifier) )       # VAR
+      #(?<named>
+        (?> :? )
+      #)
+      #(?<var>
+        (?> \$ (?&PerlIdentifier) )
+      #)
       (?>
         (?&PerlOWS)
-        (?: = )                         # HASDEFAULT
+        #(?<hasdefault>
+          (?: = )
+        #)
         (?&PerlOWS)
-        (?: (?&PerlScalarExpression)? ) # DEFAULT
+        #(?<default>
+          (?: (?&PerlScalarExpression)? )
+        #)
       )?
     )
   |
   (?:
-    (?: (?> [$@%] ) (?> (?&PerlIdentifier)? ) ) # VAR
+    #(?<other>
+      (?: (?> [$@%] ) (?> (?&PerlIdentifier)? ) )
+    #)
   )
 };
 
@@ -62,7 +74,7 @@ my $FPParamListComplete = qq{
    (?:
      (?:
        $FPParamListPartial
-       [:]
+       (?&PerlOWS) [:] (?&PerlOWS)
      )?
      (?:
        $FPParamListPartial
@@ -89,8 +101,8 @@ sub extend_grammar {
   $g->augment_rule(AnonymousSubroutine => '(?&PerlFPDeclaration)');
 }
 
-sub transform_to_plain {
-  my ($self, $top) = @_;
+sub _do_transform {
+  my ($self, $top, $cb) = @_;
   $top->remove_use_statement('Function::Parameters');
   $top->each_match_within(FPDeclaration => [
       [ kw => $self->_fp_keywords_re ],
@@ -99,18 +111,117 @@ sub transform_to_plain {
       [ rest => '(?&PerlOWS) (?&PerlBlock)' ],
     ] => sub {
       my ($m) = @_;
+      my $gr = $m->grammar_regexp;
       my ($kw, $sig, $rest) = @{$m->submatches}{qw(kw sig rest)};
       my $kw_text = $kw->text;
       my $kw_info = $self->_import_info->{fp}{$kw_text};
-      $kw->replace_text('sub');
       my $sig_text = $sig->text;
-      #use DDP; p $self->_fp_arg_code_deparse( $kw_text, $sig_text );
-      my $front = ('my $self = shift;')x!!$kw_info->{shift}
-                  .($sig_text && $sig_text ne '()' ? "my ${sig_text} = \@_;": '');
-      $rest->transform_text(sub { s/^(\s*)\{/${1}{ ${front}/ });
-      $sig->replace_text('');
+
+      (my $inner_sig = $sig_text) =~ s/(?: \A \( (?&PerlOWS) |  (?&PerlOWS) \) \Z ) $gr//xg;
+      my ($invocant_pl, $rest_pl) = $inner_sig =~ /
+        \A
+        (?:
+        ($FPParamListPartial)
+        (?&PerlOWS) [:] (?&PerlOWS)
+        )?
+        ($FPParamListPartial)
+        \Z $gr/x;
+
+      my @invocants = $self->_parse_param_list($m, $invocant_pl);
+      my @params = $self->_parse_param_list($m, $rest_pl);
+
+      $cb->($m, $kw_text, \@invocants, \@params);
+  });
+
+}
+
+sub transform_to_plain {
+  my ($self, $top) = @_;
+  $self->_do_transform($top, sub {
+    my ($m, $kw_text, $invocants, $params) = @_;
+
+    my ($kw, $sig, $rest) = @{$m->submatches}{qw(kw sig rest)};
+    my $kw_info = $self->_import_info->{fp}{$kw_text};
+    $kw->replace_text('sub');
+
+    my @invocant_vars;
+    my @params_vars;
+    if( ! @$invocants && $kw_info->{shift} ) {
+      push @invocant_vars, split ' ', $kw_info->{shift};
+    } elsif( @$invocants ) {
+      push @invocant_vars, map { $_->{var} } @$invocants;
+    }
+    push @params_vars, map { $_->{var} } @$params;
+
+    my @front_statements;
+    if( @invocant_vars ) {
+      my $shift_perl = join "; ", map { "my $_ = shift" } @invocant_vars;
+      push @front_statements, $shift_perl;
+    }
+    if( @params_vars ) {
+      my $params_perl = join ", ", @params_vars;
+      push @front_statements, "my ($params_perl) = \@_";
+    }
+    my $front = join "; ", @front_statements;
+    $front .= ";";
+    $rest->transform_text(sub { s/^(\s*)\{/${1}{ ${front}/ });
+    $sig->replace_text('');
   });
 }
+
+sub transform_to_plain_via_deparse {
+  my ($self, $top) = @_;
+  $self->_do_transform($top, sub {
+    my ($m, $kw_text, $invocants, $params) = @_;
+
+    my ($kw, $sig, $rest) = @{$m->submatches}{qw(kw sig rest)};
+    my $kw_info = $self->_import_info->{fp}{$kw_text};
+    $kw->replace_text('sub');
+
+    my $sig_text = '';
+    $sig_text .= '(';
+
+    if( @$invocants ) {
+      $sig_text .= join ", ", map {
+        $_->{var}
+      } @$invocants;
+      $sig_text .= " : ";
+    }
+    if( @$params ) {
+      $sig_text .= join ", ", map {
+        join " ", grep defined, @$_{qw(named var hasdefault default)}
+      } @$params;
+    }
+
+    $sig_text .= ')';
+
+    my $front = $self->_fp_arg_code_deparse($kw_text, $sig_text);
+
+    $rest->transform_text(sub { s/^(\s*)\{/${1}{ ${front}/ });
+    $sig->replace_text('');
+  });
+}
+
+sub _parse_param_list {
+  my ($self, $m, $param_text) = @_;
+  return () unless $param_text;
+  my $gr = $m->grammar_regexp;
+  (my $capturing_re = $FPParamRE) =~ s/^(\s*)#/$1/gm;
+  my @params;
+  if( $param_text =~ /\A $capturing_re $gr/xg ) {
+    push @params, +{ %+ };
+  }
+  while( $param_text =~ /\G (?&PerlOWS) [,] (?&PerlOWS) $capturing_re $gr/xg) {
+    push @params, +{ %+ };
+  }
+  for my $param (@params) {
+    if( exists $param->{other} ) {
+      $param->{var} = delete $param->{other};
+    }
+  }
+  @params;
+}
+
 
 sub _fp_arg_code_deparse {
   my ($self, $kw_text, $sig_text) = @_;
