@@ -8,6 +8,8 @@ with qw(
 	'Dist::Zilla::Role::PluginBundle::PluginRemover' => { -version => '0.103' },
 ;
 
+use Dist::Zilla::Plugin::Babble ();
+use Babble 0.090009 ();
 use Dist::Zilla::Plugin::RunExtraTests ();
 use Dist::Zilla::Plugin::Test::MinimumVersion ();
 use Dist::Zilla::Plugin::Test::Perl::Critic ();
@@ -20,6 +22,18 @@ sub configure {
 	$self->add_bundle('Filter', {
 		'-bundle' => '@Author::ZMUGHAL::Basic',
 	});
+
+	$self->add_plugins(
+		['Babble' => {
+			plugin => [ qw(
+				Dist::Zilla::PluginBundle::Author::ZMUGHAL::Babble::FunctionParameters
+				::DefinedOr
+				::SubstituteAndReturn
+				::State
+				::Ellipsis
+			) ],
+		}],
+	);
 
 	# ; run the xt/ tests
 	$self->add_plugins( qw( RunExtraTests) );
