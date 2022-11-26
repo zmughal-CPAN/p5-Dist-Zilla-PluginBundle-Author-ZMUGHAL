@@ -8,6 +8,12 @@ with qw(
 	'Dist::Zilla::Role::PluginBundle::PluginRemover' => { -version => '0.103' },
 ;
 
+use Dist::Zilla::Plugin::RunExtraTests ();
+use Dist::Zilla::Plugin::Test::MinimumVersion ();
+use Dist::Zilla::Plugin::Test::Perl::Critic ();
+use Dist::Zilla::Plugin::Test::PodSpelling ();
+use Dist::Zilla::Plugin::PodCoverageTests ();
+
 sub configure {
 	my $self = shift;
 
