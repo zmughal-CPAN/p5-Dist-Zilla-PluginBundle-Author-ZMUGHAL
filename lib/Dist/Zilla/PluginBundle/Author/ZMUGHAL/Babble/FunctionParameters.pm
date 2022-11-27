@@ -275,6 +275,8 @@ sub _fp_arg_code_deparse {
   $replaced =~ s/shift\(\);/shift;/g;
   $replaced =~ s/my\(/my (/g;
 
+  $replaced =~ s/\Q%{__rest} = ();\E/(%{__rest}) = ();/;
+
   $replaced;
 }
 
