@@ -95,6 +95,7 @@ sub extend_grammar {
     (?: (?&PerlIdentifier)(?&PerlOWS) )?+
     (?> (?&PerlBabbleFPParamList) )
     (?&PerlOWS)
+    (?: (?>(?&PerlAttributes))  (?&PerlOWS) )?+
     (?&PerlBlock)
   });
   $g->augment_rule(SubroutineDeclaration => '(?&PerlFPDeclaration)');
@@ -108,7 +109,11 @@ sub _do_transform {
       [ kw => $self->_fp_keywords_re ],
       [ name => '(?&PerlOWS) (?:(?&PerlIdentifier)(?&PerlOWS))?+' ],
       [ sig => '(?&PerlBabbleFPParamList)' ],
-      [ rest => '(?&PerlOWS) (?&PerlBlock)' ],
+      [ rest => q{
+        (?&PerlOWS)
+        (?: (?>(?&PerlAttributes))  (?&PerlOWS) )?+
+        (?&PerlBlock)
+      } ],
     ] => sub {
       my ($m) = @_;
       my $gr = $m->grammar_regexp;
