@@ -16,6 +16,15 @@ use Dist::Zilla::Plugin::Test::Perl::Critic ();
 use Dist::Zilla::Plugin::Test::PodSpelling ();
 use Dist::Zilla::Plugin::PodCoverageTests ();
 
+use constant FP_OT => 'Dist::Zilla::PluginBundle::Author::ZMUGHAL::Babble::FunctionParameters::OT';
+use Subclass::Of 'Dist::Zilla::PluginBundle::Author::ZMUGHAL::Babble::FunctionParameters',
+	-package => FP_OT,
+	-has     => [
+		setup_package => sub { 'Orbital::Transfer::Common::Setup' },
+	];
+
+
+
 sub configure {
 	my $self = shift;
 
@@ -25,8 +34,9 @@ sub configure {
 
 	$self->add_plugins(
 		['Babble' => {
-			plugin => [ qw(
-				Dist::Zilla::PluginBundle::Author::ZMUGHAL::Babble::FunctionParameters
+			plugin => [
+				FP_OT,
+			qw(
 				::DefinedOr
 				::SubstituteAndReturn
 				::State

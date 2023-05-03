@@ -5,9 +5,7 @@ use warnings;
 use Import::Into;
 use Mu;
 
-ro setup_package => (
-  default => sub { 'Orbital::Transfer::Common::Setup' },
-);
+ro setup_package =>;
 
 lazy _import_info => sub {
   my ($self) = @_;
