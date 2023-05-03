@@ -41,6 +41,8 @@ sub configure {
 				::SubstituteAndReturn
 				::State
 				::Ellipsis
+				::PostfixDeref
+				::PackageBlock
 			) ],
 		}],
 	);
