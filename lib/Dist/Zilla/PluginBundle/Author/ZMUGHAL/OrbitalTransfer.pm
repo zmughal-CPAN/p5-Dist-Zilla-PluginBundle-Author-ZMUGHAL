@@ -16,6 +16,11 @@ use Dist::Zilla::Plugin::Test::Perl::Critic ();
 use Dist::Zilla::Plugin::Test::PodSpelling ();
 use Dist::Zilla::Plugin::PodCoverageTests ();
 
+use Dist::Zilla::Plugin::Run::BeforeBuild ();
+use Path::Tiny ();
+use Dist::Zilla::Plugin::CPANFile ();
+use Dist::Zilla::Plugin::CopyFilesFromBuild ();
+
 use constant FP_OT => 'Dist::Zilla::PluginBundle::Author::ZMUGHAL::Babble::FunctionParameters::OT';
 use Subclass::Of 'Dist::Zilla::PluginBundle::Author::ZMUGHAL::Babble::FunctionParameters',
 	-package => FP_OT,
@@ -30,7 +35,31 @@ sub configure {
 
 	$self->add_bundle('Filter', {
 		'-bundle' => '@Author::ZMUGHAL::Basic',
+		'-remove' => [ 'GatherDir' ],
 	});
+
+	$self->add_plugins(
+		[ 'GatherDir' => {
+			'exclude_filename' => [
+				'maint/cpanfile',
+				'maint/cpanfile.snapshot',
+			],
+		}],
+	);
+
+	$self->add_plugins(
+		[ 'Run::BeforeBuild' => {
+			eval => [
+				'use Path::Tiny; path(q{%o}, q{maint})->mkpath;'
+			],
+		}],
+		['CPANFile' => {
+			filename => 'maint/cpanfile',
+		}],
+		[ 'CopyFilesFromBuild' => {
+			move => 'maint/cpanfile',
+		}],
+	);
 
 	$self->add_plugins(
 		['Babble' => {
